@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Button, Row, Col } from "react-bootstrap";
-import useLolData from "../../hooks/useLolData";
-import ChampionCard from "../compareChamp/ChampionCard.js";
-import ItemCard from "../compareChamp/ItemCard.js";
-import ItemDropdown from "../compareChamp/ItemDropdown.js";
-import itemsData from "../../data/someItems.json";
+import useLolData from "../hooks/useLolData";
+import ChampionCard from "../components/compareChamp/ChampionCard.js";
+import ItemCard from "../components/compareChamp/ItemCard.js";
+import ItemDropdown from "../components/compareChamp/ItemDropdown.js";
+import itemsData from "../hooks/useItemStats.js";
 
 function JakesPage() {
   const navigate = useNavigate();
