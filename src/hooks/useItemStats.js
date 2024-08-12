@@ -3,13 +3,13 @@ import { useMemo } from "react";
 function useItemStats() {
   const formatStatValue = (value) => {
     if (typeof value === "object" && value !== null) {
-      if ("flat" in value) {
+      if (value.flat !== 0) {
         return value.flat.toFixed(1);
-      } else if ("percent" in value) {
+      } else if (value.percent !== 0) {
         return `${value.percent}%`;
       }
     }
-    return value.toString();
+    return "0";
   };
 
   const getStatColor = useMemo(

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import useLolData from "../hooks/useLolData";
-import ChampionCard from "../components/compareChamp/ChampionCard.js";
-import ItemCard from "../components/compareChamp/ItemCard.js";
-import ItemDropdown from "../components/compareChamp/ItemDropdown.js";
-import itemsData from "../hooks/useItemStats.js";
+import ChampionCard from "../components/compareChamp/ChampionCard";
+import ItemCard from "../components/compareChamp/ItemCard";
+import ItemDropdown from "../components/compareChamp/ItemDropdown";
+import itemsData from "../data/someItems.json";
 
 function JakesPage() {
   const navigate = useNavigate();
@@ -35,84 +35,87 @@ function JakesPage() {
     setChampItems(newItems);
   };
 
-  return (
-    <Container className="mt-5">
-      <h2 className="mb-4">Champion Comparison</h2>
-      <Row>
-        <Col md={6}>
-          {aatroxLoading ? (
-            <div>Loading Aatrox...</div>
-          ) : aatroxError ? (
-            <div>Error loading Aatrox: {aatroxError}</div>
-          ) : aatroxData ? (
-            <>
-              <ChampionCard
-                champion={aatroxData}
-                level={aatroxLevel}
-                setLevel={setAatroxLevel}
-                otherChampion={akaliData}
-                otherLevel={akaliLevel}
-                isAatrox={true}
+  const renderChampionItems = (champItems, setChampItems, champName) => (
+    <>
+      <h4 className="mt-3 mb-2">{champName} Items</h4>
+      <Row className="g-2">
+        {champItems.map((itemId, index) => (
+          <Col xs={4} key={index}>
+            <div className="border p-1 h-100">
+              <ItemDropdown
+                items={itemsData}
+                selectedItem={itemId}
+                onSelectItem={(newItemId) =>
+                  handleItemSelect(champItems, setChampItems, index, newItemId)
+                }
               />
-              <h4 className="mt-3">Aatrox Items</h4>
-              {aatroxItems.map((item, index) => (
-                <ItemDropdown
-                  key={index}
-                  items={itemsData}
-                  selectedItem={item}
-                  onSelectItem={(itemId) =>
-                    handleItemSelect(aatroxItems, setAatroxItems, index, itemId)
-                  }
-                />
-              ))}
-              <ItemCard
-                items={aatroxItems.map((id) => itemsData[id]).filter(Boolean)}
-              />
-            </>
-          ) : (
-            <div>No data for Aatrox</div>
-          )}
-        </Col>
-        <Col md={6}>
-          {akaliLoading ? (
-            <div>Loading Akali...</div>
-          ) : akaliError ? (
-            <div>Error loading Akali: {akaliError}</div>
-          ) : akaliData ? (
-            <>
-              <ChampionCard
-                champion={akaliData}
-                level={akaliLevel}
-                setLevel={setAkaliLevel}
-                otherChampion={aatroxData}
-                otherLevel={aatroxLevel}
-                isAatrox={false}
-              />
-              <h4 className="mt-3">Akali Items</h4>
-              {akaliItems.map((item, index) => (
-                <ItemDropdown
-                  key={index}
-                  items={itemsData}
-                  selectedItem={item}
-                  onSelectItem={(itemId) =>
-                    handleItemSelect(akaliItems, setAkaliItems, index, itemId)
-                  }
-                />
-              ))}
-              <ItemCard
-                items={akaliItems.map((id) => itemsData[id]).filter(Boolean)}
-              />
-            </>
-          ) : (
-            <div>No data for Akali</div>
-          )}
-        </Col>
+              <div className="mt-1">
+                {itemId && <ItemCard items={[itemsData[itemId]]} />}
+              </div>
+            </div>
+          </Col>
+        ))}
       </Row>
+    </>
+  );
 
-      <Button onClick={handleGoBack} className="mt-4">
-        Go Back
-      </Button>
-    </Container>
+  return (
+    <div
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
+      <Container className="flex-grow-1 mt-3 mb-3">
+        <h2 className="mb-3">Champion Comparison</h2>
+        <Row>
+          <Col md={6}>
+            {aatroxLoading ? (
+              <div>Loading Aatrox...</div>
+            ) : aatroxError ? (
+              <div>Error loading Aatrox: {aatroxError}</div>
+            ) : aatroxData ? (
+              <>
+                <ChampionCard
+                  champion={aatroxData}
+                  level={aatroxLevel}
+                  setLevel={setAatroxLevel}
+                  otherChampion={akaliData}
+                  otherLevel={akaliLevel}
+                  isAatrox={true}
+                />
+                {renderChampionItems(aatroxItems, setAatroxItems, "Aatrox")}
+              </>
+            ) : (
+              <div>No data for Aatrox</div>
+            )}
+          </Col>
+          <Col md={6}>
+            {akaliLoading ? (
+              <div>Loading Akali...</div>
+            ) : akaliError ? (
+              <div>Error loading Akali: {akaliError}</div>
+            ) : akaliData ? (
+              <>
+                <ChampionCard
+                  champion={akaliData}
+                  level={akaliLevel}
+                  setLevel={setAkaliLevel}
+                  otherChampion={aatroxData}
+                  otherLevel={aatroxLevel}
+                  isAatrox={false}
+                />
+                {renderChampionItems(akaliItems, setAkaliItems, "Akali")}
+              </>
+            ) : (
+              <div>No data for Akali</div>
+            )}
+          </Col>
+        </Row>
+      </Container>
+      <footer className="mt-auto py-2 bg-light">
+        <Container>
+          <Button onClick={handleGoBack}>Go Back</Button>
+        </Container>
+      </footer>
+    </div>
   );
 }
 
